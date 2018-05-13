@@ -20,7 +20,7 @@ namespace Library_manager
         //private Entry entry { get; set; }        
         //public Form1(Entry _entry)
         public Form1()
-        {           
+        {
             InitializeComponent();
             //entry = _entry;
         }
@@ -64,11 +64,27 @@ namespace Library_manager
             sqliteUpdateCommand.Parameters.Add(new SQLiteParameter("@oldId", DbType.Int16, "id"));
             sqliteUpdateCommand.Parameters["@oldId"].SourceVersion = DataRowVersion.Original;
 
+            SQLiteCommand sqliteInsertCommand;
+            sqliteInsertCommand = sqlite_conn.CreateCommand();
+            sqliteInsertCommand.CommandText = "INSERT INTO Clients (id, Adress, Familiya, Imya) VALUES (@id, @Adress, @Familiya, 'Artemka')";
+
+            sqliteInsertCommand.Parameters.Add(new SQLiteParameter("@id", DbType.Int16, "id"));
+            sqliteInsertCommand.Parameters.Add(new SQLiteParameter("@Adress", DbType.String, "Adress"));
+            sqliteInsertCommand.Parameters.Add(new SQLiteParameter("@Familiya", DbType.String, "Familiya"));
+            sqliteInsertCommand.Parameters.Add(new SQLiteParameter("@oldId", DbType.Int16, "id"));
+            sqliteInsertCommand.Parameters["@oldId"].SourceVersion = DataRowVersion.Original;
+
+            SQLiteCommand sqliteDeleteCommand;
+            sqliteDeleteCommand = sqlite_conn.CreateCommand();
+            sqliteDeleteCommand.CommandText = "DELETE FROM Clients WHERE id=@id";
+            sqliteDeleteCommand.Parameters.Add(new SQLiteParameter("@id", DbType.Int16, "id"));
 
             mDataTable = new DataTable();
             da = new SQLiteDataAdapter();
             da.SelectCommand = sqliteSelectCommand;
             da.UpdateCommand = sqliteUpdateCommand;
+            da.InsertCommand = sqliteInsertCommand;
+            da.DeleteCommand = sqliteDeleteCommand;
             da.Fill(mDataTable);
             dataGridView1.DataSource = mDataTable;
         }
@@ -76,6 +92,6 @@ namespace Library_manager
         private void button2_Click(object sender, EventArgs e)
         {
             da.Update(mDataTable);
-        }       
+        }
     }
 }
